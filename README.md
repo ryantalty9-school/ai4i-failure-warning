@@ -13,7 +13,7 @@ step in before a breakdown stops the line. Built on the AI4I 2020 Predictive Mai
 | **Processing** | Validated shifts 1-18 are combined, renamed, de-duplicated, and enriched with engineered features (temperature difference, mechanical power, strain), then stored as Parquet. | pandas, pyarrow |
 | **Versioning** | The source file, raw zone, and training table are tracked with DVC (local remote); code, `.dvc` pointers, and reports are tracked in Git with a `data-v1.x` tag. | Git, DVC |
 | **Experiment tracking** | One MLflow experiment, four objectives: model comparison, raw vs engineered features, class-imbalance handling, tuning grid (nested runs). Each run logs tags, description, dataset, parameters, 5-fold CV metrics, a cost-based threshold, plots, and the model. | MLflow, scikit-learn, XGBoost, imbalanced-learn |
-| **Model registry** | The best model per the selection rules is scored once on the untouched 20% hold-out set and registered as `ai4i-failure-model`, alongside the best logistic regression (baseline) and random forest (challenger). Aliases: `champion`, `baseline`, `challenger`. | MLflow Model Registry |
+| **Model registry** | The best model per the selection rules is scored once on the untouched 20% hold-out set and registered as `ai4i-failure-model`, alongside the best logistic regression (baseline) and the best model from another family (challenger). Aliases: `champion`, `baseline`, `challenger`. | MLflow Model Registry |
 | **App** | Streamlit app that loads the `champion` model from the registry: ingest the next shift, validate it, and rank machines by failure risk; check a single machine; view the registry and leaderboard. | Streamlit |
 
 ## How to run it (macOS)

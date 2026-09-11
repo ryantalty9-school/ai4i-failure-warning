@@ -8,9 +8,9 @@ Selection rules (from the experiment tracking plan):
   4. the winner must beat the logistic regression baseline on the hold-out set
 
 Three versions are registered under one model name so they can be compared side by side:
-  alias "baseline"   -> best logistic regression
-  alias "challenger" -> best random forest
+  alias "baseline"   -> best logistic regression (the simple benchmark)
   alias "champion"   -> the winner (used by the Streamlit app)
+  alias "challenger" -> best model from a different family than the champion (next in line)
 
 Usage:
     python -m src.register
@@ -77,7 +77,9 @@ def main():
 
     lb = leaderboard(exp_id, cfg)
     winner, gates_met = pick_winner(lb)
-    candidates = {"baseline": best_of(lb, "logreg"), "challenger": best_of(lb, "rf"), "champion": winner}
+    others = lb[~lb["family"].isin([winner["family"], "logreg"])]
+    challenger = others.sort_values("cv_pr_auc", ascending=False).iloc[0] if not others.empty else None
+    candidates = {"baseline": best_of(lb, "logreg"), "challenger": challenger, "champion": winner}
 
     # ---- hold-out test set: scored once, for the shortlisted models only
     table = pd.read_parquet(path(cfg["data"]["processed_path"]))
@@ -109,9 +111,12 @@ def main():
         client.create_registered_model(name, description=(
             "Predicts the probability that a milling machine run ends in failure (AI4I 2020). "
             "Aliases: champion = model used by the app, baseline = best logistic regression, "
-            "challenger = best random forest. Alert when probability >= the version's 'threshold' tag."))
+            "challenger = best model from another family. Alert when probability >= the version's 'threshold' tag."))
     except Exception:
-        pass
+        client.update_registered_model(name, description=(
+            "Predicts the probability that a milling machine run ends in failure (AI4I 2020). "
+            "Aliases: champion = model used by the app, baseline = best logistic regression, "
+            "challenger = best model from another family. Alert when probability >= the version's 'threshold' tag."))
     existing = {v.run_id: v for v in client.search_model_versions(f"name='{name}'")}
     registered = {}
     for role in ["baseline", "challenger", "champion"]:

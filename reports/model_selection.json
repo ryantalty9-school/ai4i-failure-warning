@@ -20,19 +20,19 @@
       "tn": 1726
     },
     "challenger": {
-      "threshold": 0.29,
+      "threshold": 0.31,
       "recall": 0.9047619047619048,
-      "precision": 0.8382352941176471,
-      "f1": 0.8702290076335878,
-      "f2": 0.890625,
-      "cost_per_1k_runs": 148055.55555555553,
-      "alerts_per_1k_runs": 37.77777777777778,
-      "pr_auc": 0.9230526919325164,
-      "roc_auc": 0.9811022470780674,
+      "precision": 0.59375,
+      "f1": 0.7169811320754716,
+      "f2": 0.8189655172413793,
+      "cost_per_1k_runs": 155833.33333333334,
+      "alerts_per_1k_runs": 53.333333333333336,
+      "pr_auc": 0.90892511098395,
+      "roc_auc": 0.987983295409893,
       "tp": 57,
-      "fp": 11,
+      "fp": 39,
       "fn": 6,
-      "tn": 1726
+      "tn": 1698
     },
     "champion": {
       "threshold": 0.29,
@@ -57,9 +57,9 @@
       "threshold": 0.96
     },
     "challenger": {
-      "version": 2,
-      "run": "rf-engineered-classweight-v1",
-      "threshold": 0.29
+      "version": 3,
+      "run": "xgb-engineered-classweight-d5-lr0.05-n200-v1",
+      "threshold": 0.31
     },
     "champion": {
       "version": 2,
@@ -69,7 +69,7 @@
   },
   "data_version": {
     "data_version": "data-v1.0",
-    "git_commit": "dc41af6",
+    "git_commit": "28d172f",
     "data_md5": "813549ce3852c9281d0acffdaf9a579a"
   },
   "targets": {
