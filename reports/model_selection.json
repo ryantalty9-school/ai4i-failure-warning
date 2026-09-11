@@ -1,0 +1,84 @@
+{
+  "winner_run": "rf-engineered-classweight-v1",
+  "winner_family": "rf",
+  "gates_met": true,
+  "champion_beats_baseline_on_holdout": true,
+  "holdout": {
+    "baseline": {
+      "threshold": 0.96,
+      "recall": 0.2857142857142857,
+      "precision": 0.6206896551724138,
+      "f1": 0.391304347826087,
+      "f2": 0.3202846975088968,
+      "cost_per_1k_runs": 408055.55555555556,
+      "alerts_per_1k_runs": 16.11111111111111,
+      "pr_auc": 0.4756465175850275,
+      "roc_auc": 0.9265381838784257,
+      "tp": 18,
+      "fp": 11,
+      "fn": 45,
+      "tn": 1726
+    },
+    "challenger": {
+      "threshold": 0.29,
+      "recall": 0.9047619047619048,
+      "precision": 0.8382352941176471,
+      "f1": 0.8702290076335878,
+      "f2": 0.890625,
+      "cost_per_1k_runs": 148055.55555555553,
+      "alerts_per_1k_runs": 37.77777777777778,
+      "pr_auc": 0.9230526919325164,
+      "roc_auc": 0.9811022470780674,
+      "tp": 57,
+      "fp": 11,
+      "fn": 6,
+      "tn": 1726
+    },
+    "champion": {
+      "threshold": 0.29,
+      "recall": 0.9047619047619048,
+      "precision": 0.8382352941176471,
+      "f1": 0.8702290076335878,
+      "f2": 0.890625,
+      "cost_per_1k_runs": 148055.55555555553,
+      "alerts_per_1k_runs": 37.77777777777778,
+      "pr_auc": 0.9230526919325164,
+      "roc_auc": 0.9811022470780674,
+      "tp": 57,
+      "fp": 11,
+      "fn": 6,
+      "tn": 1726
+    }
+  },
+  "registered": {
+    "baseline": {
+      "version": 1,
+      "run": "logreg-engineered-classweight-v2",
+      "threshold": 0.96
+    },
+    "challenger": {
+      "version": 2,
+      "run": "rf-engineered-classweight-v1",
+      "threshold": 0.29
+    },
+    "champion": {
+      "version": 2,
+      "run": "rf-engineered-classweight-v1",
+      "threshold": 0.29
+    }
+  },
+  "data_version": {
+    "data_version": "data-v1.0",
+    "git_commit": "dc41af6",
+    "data_md5": "813549ce3852c9281d0acffdaf9a579a"
+  },
+  "targets": {
+    "min_recall": 0.85,
+    "min_precision": 0.6
+  },
+  "costs": {
+    "missed_failure": 15000,
+    "caught_failure": 3000,
+    "false_alarm": 500
+  }
+}
