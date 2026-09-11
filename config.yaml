@@ -1,0 +1,52 @@
+# ------------------------------------------------------------------
+# AI4I Machine Failure Early Warning System - project configuration
+# Every script reads this file, so settings live in one place.
+# ------------------------------------------------------------------
+project: ai4i-failure-warning
+seed: 42
+
+data:
+  source_url: https://archive.ics.uci.edu/static/public/601/ai4i+2020+predictive+maintenance+dataset.zip
+  source_csv: data/source/ai4i2020.csv
+  raw_dir: data/raw                  # append-only landing zone (one CSV per shift)
+  validated_dir: data/validated      # rows that passed validation (Parquet)
+  quarantine_dir: data/quarantine    # rows that failed validation (CSV, for review)
+  processed_path: data/processed/train_table.parquet
+  shift_size: 500                    # 10,000 runs -> 20 shifts of 500 runs
+  training_shifts: 18                # shifts 1-18 = history used to train; 19-20 arrive later
+
+validation:
+  # Row-level rules (a row that breaks one is quarantined)
+  ranges:
+    "Air temperature [K]": [290, 310]
+    "Process temperature [K]": [300, 320]
+    "Rotational speed [rpm]": [1000, 3000]
+    "Torque [Nm]": [0, 80]
+    "Tool wear [min]": [0, 260]
+  allowed_types: [L, M, H]
+  # Batch-level statistical checks (reported, and fail the batch if broken)
+  max_failure_rate: 0.20
+  air_temp_mean_range: [295, 305]
+  label_consistency_mostly: 0.99     # share of rows where the failure label agrees with the mode flags
+
+split:
+  test_size: 0.20                    # untouched hold-out set, scored once at the end
+  cv_folds: 5
+
+costs:                               # same assumptions as the proposal
+  missed_failure: 15000              # failure we did not flag (unplanned downtime)
+  caught_failure: 3000               # failure we flagged -> planned repair
+  false_alarm: 500                   # unnecessary inspection
+
+targets:                             # success gates from the proposal
+  min_recall: 0.85
+  min_precision: 0.60
+
+mlflow:
+  tracking_uri: sqlite:///mlflow.db
+  experiment_name: AI4I Machine Failure Prediction
+  experiment_description: >-
+    Predict whether a milling machine run ends in failure (AI4I 2020 dataset, 3.4% failure rate).
+    Objectives: (1) compare LogReg vs Random Forest vs XGBoost, (2) raw vs engineered features,
+    (3) class-imbalance handling, (4) tune the best model and pick a cost-based alert threshold.
+  registered_model: ai4i-failure-model

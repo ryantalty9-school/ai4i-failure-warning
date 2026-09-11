@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.DS_Store
+
+# MLflow tracking store + artifacts (large, machine-specific)
+mlflow.db
+mlruns/
+mlartifacts/
+
+# Derived data (reproducible from data/raw with src.validate)
+data/validated/
+data/quarantine/
+data/source/*.zip
+
+# Logs from the .command scripts
+logs/

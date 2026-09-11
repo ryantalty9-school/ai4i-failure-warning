@@ -1,0 +1,260 @@
+{
+  "batch": "shift_013",
+  "validated_at": "2026-09-11T19:23:54+00:00",
+  "rows_in": 500,
+  "schema": {
+    "passed": true,
+    "missing_columns": [],
+    "extra_columns": []
+  },
+  "row_rules": {
+    "missing_value": 0,
+    "out_of_range:Air temperature [K]": 0,
+    "out_of_range:Process temperature [K]": 0,
+    "out_of_range:Rotational speed [rpm]": 0,
+    "out_of_range:Torque [Nm]": 0,
+    "out_of_range:Tool wear [min]": 0,
+    "invalid_type": 0,
+    "invalid_label": 0,
+    "duplicate_udi": 0,
+    "process_not_above_air": 0
+  },
+  "batch_checks": [
+    {
+      "check": "row_count_positive",
+      "severity": "error",
+      "value": 500,
+      "passed": true
+    },
+    {
+      "check": "failure_rate_max",
+      "severity": "error",
+      "value": 0.026,
+      "limit": 0.2,
+      "passed": true
+    },
+    {
+      "check": "air_temp_mean_range",
+      "severity": "error",
+      "value": 300.73,
+      "limit": [
+        295,
+        305
+      ],
+      "passed": true
+    },
+    {
+      "check": "label_agrees_with_mode_flags",
+      "severity": "warning",
+      "value": 0.996,
+      "limit": 0.99,
+      "disagreeing_rows": 2,
+      "passed": true
+    }
+  ],
+  "great_expectations": {
+    "engine": "great_expectations 1.8.1",
+    "success": true,
+    "evaluated": 32,
+    "failed": 0,
+    "results": [
+      {
+        "expectation": "expect_table_columns_to_match_ordered_list",
+        "column": "table",
+        "success": true,
+        "unexpected_count": null
+      },
+      {
+        "expectation": "expect_table_row_count_to_be_between",
+        "column": "table",
+        "success": true,
+        "unexpected_count": null
+      },
+      {
+        "expectation": "expect_column_pair_values_a_to_be_greater_than_b",
+        "column": "Process temperature [K] > Air temperature [K]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "UDI",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_unique",
+        "column": "UDI",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Product ID",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Type",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "Type",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Air temperature [K]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_between",
+        "column": "Air temperature [K]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_mean_to_be_between",
+        "column": "Air temperature [K]",
+        "success": true,
+        "unexpected_count": null
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Process temperature [K]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_between",
+        "column": "Process temperature [K]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Rotational speed [rpm]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_between",
+        "column": "Rotational speed [rpm]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Torque [Nm]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_between",
+        "column": "Torque [Nm]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Tool wear [min]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_between",
+        "column": "Tool wear [min]",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "Machine failure",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "Machine failure",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_mean_to_be_between",
+        "column": "Machine failure",
+        "success": true,
+        "unexpected_count": null
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "TWF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "TWF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "HDF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "HDF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "PWF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "PWF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "OSF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "OSF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_not_be_null",
+        "column": "RNF",
+        "success": true,
+        "unexpected_count": 0
+      },
+      {
+        "expectation": "expect_column_values_to_be_in_set",
+        "column": "RNF",
+        "success": true,
+        "unexpected_count": 0
+      }
+    ]
+  },
+  "status": "passed",
+  "rows_valid": 500,
+  "rows_quarantined": 0,
+  "source_file": "shift_013.csv",
+  "source_md5": "b4c49052dabbfb09b5fe0e6dc26fca37"
+}

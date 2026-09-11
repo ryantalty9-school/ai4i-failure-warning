@@ -1,0 +1,5 @@
+[core]
+    analytics = false
+    remote = localstore
+['remote "localstore"']
+    url = /Users/ryantalty/dvc-storage/ai4i-failure-warning
