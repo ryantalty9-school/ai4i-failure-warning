@@ -15,3 +15,6 @@ data/source/*.zip
 
 # Logs from the .command scripts
 logs/
+
+# Files staged for the tests + CI pull request (moved into place by 8_open_pr.command)
+_pr_files/

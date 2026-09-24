@@ -4,9 +4,13 @@ Simulates a sensor-feed glitch: missing torque readings, an impossible air tempe
 an unknown product type, a duplicated machine run, and a process temperature below air temperature.
 
 Usage:
-    python -m src.simulate
+    python -m src.simulate            # write the glitch shift
+    python -m src.simulate --reset    # put the demo back to "shifts 1-18 only" before recording
 """
 from __future__ import annotations
+
+import json
+import sys
 
 import numpy as np
 import pandas as pd
@@ -36,5 +40,30 @@ def make_glitch_shift(seed: int = 7) -> str:
     return out.name
 
 
+def reset_demo() -> list[str]:
+    """Remove every shift after the training history (and the glitch file) so the demo starts clean.
+    Only touches data/raw, data/validated, data/quarantine, and reports/validation; training data is untouched."""
+    cfg = load_config()
+    keep = cfg["data"]["training_shifts"]
+    removed = []
+    folders = [(cfg["data"]["raw_dir"], ".csv"), (cfg["data"]["validated_dir"], ".parquet"),
+               (cfg["data"]["quarantine_dir"], ".csv"), ("reports/validation", ".json")]
+    for folder, ext in folders:
+        for f in path(folder).glob(f"shift_*{ext}"):
+            num = f.stem[6:9]
+            if not num.isdigit() or int(num) > keep:
+                f.unlink()
+                removed.append(f"{folder}/{f.name}")
+    manifest = path(cfg["data"]["raw_dir"]) / "_manifest.json"
+    if manifest.exists():
+        entries = [e for e in json.loads(manifest.read_text()) if e["shift"] <= keep]
+        manifest.write_text(json.dumps(entries, indent=2))
+    return removed
+
+
 if __name__ == "__main__":
-    print("wrote", make_glitch_shift())
+    if "--reset" in sys.argv:
+        gone = reset_demo()
+        print("demo reset; removed:", *gone, sep="\n  ") if gone else print("demo already clean")
+    else:
+        print("wrote", make_glitch_shift())

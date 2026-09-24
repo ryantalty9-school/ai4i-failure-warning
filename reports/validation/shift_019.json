@@ -1,6 +1,6 @@
 {
-  "batch": "shift_002",
-  "validated_at": "2026-09-24T02:16:10+00:00",
+  "batch": "shift_019",
+  "validated_at": "2026-09-24T02:16:22+00:00",
   "rows_in": 500,
   "schema": {
     "passed": true,
@@ -29,14 +29,14 @@
     {
       "check": "failure_rate_max",
       "severity": "error",
-      "value": 0.014,
+      "value": 0.018,
       "limit": 0.2,
       "passed": true
     },
     {
       "check": "air_temp_mean_range",
       "severity": "error",
-      "value": 296.9,
+      "value": 297.9,
       "limit": [
         295,
         305
@@ -46,9 +46,9 @@
     {
       "check": "label_agrees_with_mode_flags",
       "severity": "warning",
-      "value": 1.0,
+      "value": 0.998,
       "limit": 0.99,
-      "disagreeing_rows": 0,
+      "disagreeing_rows": 1,
       "passed": true
     }
   ],
@@ -255,6 +255,6 @@
   "status": "passed",
   "rows_valid": 500,
   "rows_quarantined": 0,
-  "source_file": "shift_002.csv",
-  "source_md5": "616ac639cead410db459cdfd67655b28"
+  "source_file": "shift_019.csv",
+  "source_md5": "7c403b7088d91731cdd6e7362e41d6ca"
 }

@@ -5,6 +5,7 @@ Run from the project root:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -40,6 +41,12 @@ except Exception as e:
              "Run 3_run_experiments.command first.")
     st.stop()
 
+@st.cache_data(show_spinner="Validating the shift with Great Expectations...")
+def cached_validation(fname: str, md5: str) -> dict:
+    """Validate once per file version; reruns (e.g. moving a slider) reuse the result."""
+    return validate_file(path(cfg["data"]["raw_dir"]) / fname, cfg)
+
+
 threshold = info["threshold"]
 tags = info["tags"]
 
@@ -51,13 +58,18 @@ with st.sidebar:
                 f"{tags.get('feature_set')} features, imbalance = {tags.get('imbalance')}")
     c1, c2 = st.columns(2)
     c1.metric("Alert threshold", f"{threshold:.2f}")
-    c2.metric("Hold-out PR-AUC", tags.get("holdout_pr_auc", "-")[:5])
-    c1.metric("Hold-out recall", tags.get("holdout_recall", "-")[:4])
-    c2.metric("Hold-out precision", tags.get("holdout_precision", "-")[:4])
+    def _fmt(key, digits):
+        try:
+            return f"{float(tags[key]):.{digits}f}"
+        except (KeyError, ValueError):
+            return "-"
+    c2.metric("Hold-out PR-AUC", _fmt("holdout_pr_auc", 3))
+    c1.metric("Hold-out recall", _fmt("holdout_recall", 2))
+    c2.metric("Hold-out precision", _fmt("holdout_precision", 2))
     st.caption(f"Trained on data {tags.get('data_version', '?')}. An alert is raised when the predicted "
                f"failure probability is at least {threshold:.2f}. The threshold was chosen to minimize expected "
-               f"cost (missed failure ${cfg['costs']['missed_failure']:,}, planned repair "
-               f"${cfg['costs']['caught_failure']:,}, false alarm ${cfg['costs']['false_alarm']:,}) while keeping "
+               f"cost (missed failure \\${cfg['costs']['missed_failure']:,}, planned repair "
+               f"\\${cfg['costs']['caught_failure']:,}, false alarm \\${cfg['costs']['false_alarm']:,}) while keeping "
                f"precision at least {cfg['targets']['min_precision']:.0%}.")
     if st.button("Reload model from registry"):
         st.cache_resource.clear()
@@ -97,7 +109,7 @@ with tab_shift:
         if 0 < n <= cfg["data"]["training_shifts"]:
             st.info(f"{choice} is part of the training history. Shifts after "
                     f"{cfg['data']['training_shifts']} are unseen data.")
-        report = validate_file(raw_dir / choice, cfg)
+        report = cached_validation(choice, hashlib.md5((raw_dir / choice).read_bytes()).hexdigest())
         gxr = report.get("great_expectations", {})
 
         st.subheader("1 · Validation")
@@ -109,15 +121,15 @@ with tab_shift:
         with st.expander("Validation details"):
             rules = {k: v for k, v in report.get("row_rules", {}).items() if v}
             st.write("Row rules broken:", rules or "none")
-            st.dataframe(pd.DataFrame(report.get("batch_checks", [])), hide_index=True, use_container_width=True)
+            st.dataframe(pd.DataFrame(report.get("batch_checks", [])).astype(str), hide_index=True, width="stretch")
             failed = [r for r in gxr.get("results", []) if not r["success"]]
             if failed:
                 st.write("Failed Great Expectations checks:")
-                st.dataframe(pd.DataFrame(failed), hide_index=True, use_container_width=True)
+                st.dataframe(pd.DataFrame(failed), hide_index=True, width="stretch")
             q = path(cfg["data"]["quarantine_dir"]) / f"{Path(choice).stem}.csv"
             if report["rows_quarantined"] and q.exists() and q.stat().st_size:
                 st.write("Quarantined rows (held for review, not scored):")
-                st.dataframe(pd.read_csv(q).head(50), hide_index=True, use_container_width=True)
+                st.dataframe(pd.read_csv(q).head(50), hide_index=True, width="stretch")
 
         st.subheader("2 · Failure risk")
         good = pd.read_parquet(path(cfg["data"]["validated_dir"]) / f"{Path(choice).stem}.parquet")
@@ -136,7 +148,7 @@ with tab_shift:
             show = scored.head(15)[["product_id", "type", "failure_probability", "alert", "likely_driver",
                                     *RAW_NUMERIC] + (["machine_failure"] if "machine_failure" in scored else [])]
             st.dataframe(
-                show, hide_index=True, use_container_width=True,
+                show, hide_index=True, width="stretch",
                 column_config={
                     "failure_probability": st.column_config.ProgressColumn("failure probability", min_value=0.0,
                                                                            max_value=1.0, format="%.2f"),
@@ -176,13 +188,13 @@ with tab_reg:
     st.write(f"Every version of **{info['name']}** in the MLflow Model Registry. "
              "The app always serves the version with the **champion** alias.")
     try:
-        st.dataframe(registry_table(), hide_index=True, use_container_width=True)
+        st.dataframe(registry_table(), hide_index=True, width="stretch")
     except Exception as e:
         st.warning(f"Could not read the registry: {e}")
     lb = path("reports/leaderboard.csv")
     if lb.exists():
         st.write("Experiment leaderboard (top 10 by cross-validated PR-AUC):")
-        st.dataframe(pd.read_csv(lb).head(10), hide_index=True, use_container_width=True)
+        st.dataframe(pd.read_csv(lb).head(10), hide_index=True, width="stretch")
     sel = path("reports/model_selection.json")
     if sel.exists():
         with st.expander("Selection summary (reports/model_selection.json)"):
