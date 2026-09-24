@@ -112,6 +112,18 @@ tests/                 pytest suite for the validation rules, features, and metr
 reports/               validation reports, processing summary, leaderboard, model selection
 ```
 
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+The suite covers the validation rules (including what gets quarantined and what only warns), the engineered
+features, the leakage guard that keeps the failure-mode flags out of the model inputs, the cost metric, the
+threshold rule, and the train/test split. GitHub Actions runs it on every push and pull request
+(`.github/workflows/ci.yml`).
+
 ## Author
 
 | Name | GitHub | Role |
